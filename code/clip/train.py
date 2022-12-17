@@ -16,6 +16,7 @@ num_workers = 1
 epochs=10
 batch_size=64
 
+
 class Dataset:
     def __init__(self, images_path, captions_path, transform=None):
         self.captions = pd.read_csv(captions_path)
@@ -28,7 +29,7 @@ class Dataset:
         w, h = img.size
 
         # print([max(w, h) - w, max(w, h) - h])
-        pad = torchvision.transforms.Pad([max(w, h) - w, max(w, h) - h], fill=0, padding_mode='constant')
+        pad = transforms.Pad([max(w, h) - w, max(w, h) - h], fill=0, padding_mode='constant')
         img = pad(img)
         if self.transform is not None:
             img = self.transform(img)
@@ -61,5 +62,9 @@ def main():
     for i in range(epochs):
         model.train()
         train(model, dataloader, optim)
+
+
+if __name__ == '__main__':
+    main()
 
 

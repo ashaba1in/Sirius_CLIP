@@ -39,13 +39,11 @@ class Projection(nn.Module):
         self.fc1 = nn.Linear(input_dim, output_dim)
         self.relu = nn.ReLU()
         self.fc2 = nn.Linear(output_dim, output_dim)
-        self.norm = nn.LayerNorm(output_dim)
 
     def forward(self, x):
         x = self.fc1(x)
         x = self.relu(x)
         x = self.fc2(x)
-        x = self.norm(x)
         x = x / x.norm(dim=1, keepdim=True)
         return x
 
