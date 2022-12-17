@@ -25,7 +25,6 @@ img2_s = gr.Image().style(height=height, width=width)
 img3_s = gr.Image().style(height=height, width=width)
 img4_s = gr.Image().style(height=height, width=width)
 img5_s = gr.Image().style(height=height, width=width)
-demo = gr.Interface(greet, inputs=[gr.Textbox(placeholder="Request Here..."), gr.Image()], outputs=[img1_s, img2_s, img3_s, img4_s, img5_s], allow_flagging="never")
+demo = gr.Interface(greet, inputs=[gr.Textbox(placeholder="Request Here..."), gr.Image()], outputs=[img1_s, img2_s, img3_s, img4_s, img5_s], allow_flagging="never", description='Генерация изображений при помощи нейросети CLIP<br>Введите текстовый запрос, по которому будет сгенерировано изображение. К тексту можно добавить своё изображение, на основе которого будет получено новое')
 
-demo.launch(debug=True, share=True)
-
+demo.launch(debug=True)
