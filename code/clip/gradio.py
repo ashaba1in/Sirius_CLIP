@@ -28,3 +28,4 @@ img5_s = gr.Image().style(height=height, width=width)
 demo = gr.Interface(greet, inputs=[gr.Textbox(placeholder="Request Here..."), gr.Image()], outputs=[img1_s, img2_s, img3_s, img4_s, img5_s], allow_flagging="never")
 
 demo.launch(debug=True, share=True)
+
