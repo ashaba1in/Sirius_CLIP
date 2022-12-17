@@ -90,3 +90,4 @@ args = argparse.Namespace(
 )
 
 model = VQGANWithCLIP(args)
+model.train()
