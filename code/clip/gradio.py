@@ -20,11 +20,11 @@ def greet(input_text, input_image):
 
 height = 256
 width = 256
-img1_s = gr.Image().style(height=height, width=width)
-img2_s = gr.Image().style(height=height, width=width)
-img3_s = gr.Image().style(height=height, width=width)
-img4_s = gr.Image().style(height=height, width=width)
-img5_s = gr.Image().style(height=height, width=width)
-demo = gr.Interface(greet, inputs=[gr.Textbox(placeholder="Request Here..."), gr.Image()], outputs=[img1_s, img2_s, img3_s, img4_s, img5_s], allow_flagging="never", description='Генерация изображений при помощи нейросети CLIP<br>Введите текстовый запрос, по которому будет сгенерировано изображение. К тексту можно добавить своё изображение, на основе которого будет получено новое')
+img1_s = gr.Image(label="image1", tool="editor").style(height=height, width=width)
+img2_s = gr.Image(label="image2", tool="editor").style(height=height, width=width)
+img3_s = gr.Image(label="image3", tool="editor").style(height=height, width=width)
+img4_s = gr.Image(label="image4", tool="editor").style(height=height, width=width)
+img5_s = gr.Image(label="image5", tool="editor").style(height=height, width=width)
+demo = gr.Interface(fn=greet, inputs=[gr.Textbox(placeholder="Request Here..."), gr.Image()], outputs=[img1_s, img2_s, img3_s, img4_s, img5_s], allow_flagging="never", description='Генерация изображений при помощи нейросети CLIP<br>Введите текстовый запрос, по которому будет сгенерировано изображение. К тексту можно добавить своё изображение, на основе которого будет получено новое')
 
 demo.launch(debug=True)
