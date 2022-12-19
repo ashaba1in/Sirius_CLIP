@@ -1,56 +1,55 @@
 import argparse
 from model import VQGANWithCLIP
 
-parser = argparse.ArgumentParser(description="Language transfer")
+parser = argparse.ArgumentParser(description="Generate image from prompt")
 
-parser.add_argument("--seed", type=str, default="-1", help="Experiment dump path")
+parser.add_argument("--seed", type=int, default=-1, help="Seed for generation", required=True)
 parser.add_argument(
-    "--display_frequency", type=str, default=50, help="Experiment dump path"
+    "--display_frequency", type=int, default=50, help="Frequency of model result save", required=True
 )
-parser.add_argument("--prompts", type=str, default="", help="Experiment dump path")
-parser.add_argument("--width", type=int, default=200, help="Experiment dump path")
-parser.add_argument("--height", type=int, default=200, help="Experiment dump path")
+parser.add_argument("--prompts", type=str, help="Promp to generate images from", required=True)
+parser.add_argument("--width", type=int, default=200, help="Width of output image")
+parser.add_argument("--height", type=int, default=200, help="Height of output image")
 parser.add_argument(
-    "--clip_model", type=str, default="ViT-B/32", help="Experiment dump path"
+    "--clip_model", type=str, default="ViT-B/32", help="CLIP model name"
 )
 parser.add_argument(
     "--vqgan_model",
     type=str,
     default="vqgan_imagenet_f16_16384",
-    help="Experiment dump path",
+    help="VQGAN model name",
 )
 parser.add_argument(
-    "--initial_image", type=str, default="", help="Experiment dump path"
+    "--initial_image", type=str, default="", help="Image to generate from"
 )
 parser.add_argument(
-    "--target_images", type=str, default="", help="Experiment dump path"
+    "--target_images", type=str, default="", help="Image to redact"
 )
 parser.add_argument(
-    "--max_iterations", type=int, default=300, help="Experiment dump path"
-)
-parser.add_argument("--input_images", type=str, default="", help="Experiment dump path")
-parser.add_argument(
-    "--vq_init_weight", type=float, default=0.0, help="Experiment dump path"
+    "--max_iterations", type=int, default=300, help="Max amount of iterations to teach model"
 )
 parser.add_argument(
-    "--vq_step_size", type=float, default=0.1, help="Experiment dump path"
+    "--vq_init_weight", type=float, default=0.0, help="VQGAN initial weights"
 )
-parser.add_argument("--vq_cutn", type=int, default=64, help="Experiment dump path")
-parser.add_argument("--vq_cutpow", type=float, default=1.0, help="Experiment dump path")
+parser.add_argument(
+    "--vq_step_size", type=float, default=0.1, help="VQGAN learning rate for Adam"
+)
+parser.add_argument("--vq_cutn", type=int, default=64, help="VQGAN amount of crops")
+parser.add_argument("--vq_cutpow", type=float, default=1.0, help="VQGAN images augmentation")
 
 params = parser.parse_args()
 
 
-model_names = {
-    "vqgan_imagenet_f16_16384": "ImageNet 16384",
-    "vqgan_imagenet_f16_1024": "ImageNet 1024",
-    "wikiart_1024": "WikiArt 1024",
-    "wikiart_16384": "WikiArt 16384",
-    "coco": "COCO-Stuff",
-    "faceshq": "FacesHQ",
-    "sflckr": "S-FLCKR",
-}
-model_name = model_names[params.vqgan_model]
+#model_names = {
+    #"vqgan_imagenet_f16_16384": "ImageNet 16384",
+    #"vqgan_imagenet_f16_1024": "ImageNet 1024",
+    #"wikiart_1024": "WikiArt 1024",
+    #"wikiart_16384": "WikiArt 16384",
+    #"coco": "COCO-Stuff",
+    #"faceshq": "FacesHQ",
+    #"sflckr": "S-FLCKR",
+#}
+#model_name = model_names[params.vqgan_model]
 
 if params.seed == -1:
     params.seed = None
