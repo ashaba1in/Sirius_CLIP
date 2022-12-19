@@ -4,6 +4,7 @@ from torch import nn
 from torch.nn import CrossEntropyLoss
 import torch.nn.functional as F
 from transformers import BertTokenizer, BertModel
+import numpy as np
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -12,6 +13,7 @@ repo = "pytorch/vision"
 weights = "IMAGENET1K_V2"
 bert_model_name = 'bert-base-uncased'
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+temperature = 1.0
 
 class TextEncoder(nn.Module):
     def __init__(self, model, tokenizer):
@@ -39,11 +41,16 @@ class Projection(nn.Module):
         self.fc1 = nn.Linear(input_dim, output_dim)
         self.relu = nn.ReLU()
         self.fc2 = nn.Linear(output_dim, output_dim)
+        self.dropout = nn.Dropout(0.1)
+        self.norm = nn.LayerNorm(output_dim)
 
     def forward(self, x):
-        x = self.fc1(x)
-        x = self.relu(x)
+        projected = self.fc1(x)
+        x = self.relu(projected)
         x = self.fc2(x)
+        x = self.dropout(x)
+        x = x + projected
+        x = self.norm(x)
         x = x / x.norm(dim=1, keepdim=True)
         return x
 
@@ -56,11 +63,13 @@ class CLIP(nn.Module):
         self.projection_text = Projection(input_text, out_size)
         self.projection_image = Projection(input_image, out_size)
         self.temperature = 1
+        self.logit_scale = (nn.Parameter(torch.ones([]) * np.log(1 / 0.07))).to(device)
 
     def forward(self, batch):
         img = batch[0]
         # print(img.dtype, img.shape)
         text = batch[1]
+        logit_scale = self.logit_scale.exp()
         img = self.image_encoder(img)
         text = self.text_encoder(text)
 
@@ -68,7 +77,7 @@ class CLIP(nn.Module):
         # print(text.shape)
         text = self.projection_text(text)
 
-        dist = img @ text.T
+        dist = logit_scale * img @ text.T
         # li = F.softmax(dist, dim=1)
         # ti = F.softmax(dist, dim=0)
         ce = nn.CrossEntropyLoss()
